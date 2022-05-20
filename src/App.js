@@ -1,22 +1,35 @@
 import Navbar from './Components/Navbar';
-import Home from './Pages/Home';
-import About from './Pages/About';
-import Services from './Pages/Services';
-import Login from './Pages/Home';
-import Contact from './Pages/Contact';
+import { publicRoute } from './routes/publicRoute';
 import { Route, Routes } from 'react-router-dom';
+import RequiredAuth from './Authentication/RequiredAuth';
+import { privateRoute } from './routes/privateRoute';
+import RequiredAdmin from './Authentication/RequiredAdmin';
+import Dashboard from './Pages/Dashboard/Dashboard';
+import AddService from './Pages/Dashboard/AddService';
+import AddAdmin from './Pages/Dashboard/AddAdmin';
 
 function App() {
   return (
     <div >
       <Navbar>
         <Routes>
-          <Route path='/' element={<Home></Home>}></Route>
-          <Route path='/home' element={<Home></Home>}></Route>
-          <Route path='/about' element={<About></About>}></Route>
-          <Route path='/services' element={<Services></Services>}></Route>
-          <Route path='/login' element={<Login></Login>}></Route>
-          <Route path='/contact' element={<Contact></Contact>}></Route>
+          {publicRoute.map(({ path, Component }, index) => (
+            <Route key={index} path={path} element={<Component />} />
+          ))}
+
+          <Route element={<RequiredAuth />}>
+            {privateRoute.map(({ path, Component }, index) => (
+              <Route key={index} path={path} element={<Component />} />
+            ))}
+          </Route>
+
+          <Route element={<RequiredAdmin />}>
+            <Route path='/dashboard' element={<Dashboard></Dashboard>}>
+              <Route index path='add-service' element={<AddService />}></Route>
+              <Route path='add-admin' element={<AddAdmin />}></Route>
+            </Route>
+          </Route>
+
         </Routes>
       </Navbar>
     </div>
